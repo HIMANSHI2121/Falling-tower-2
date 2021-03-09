@@ -3,96 +3,85 @@ const World = Matter.World;
 const Bodies = Matter.Bodies;
 const Constraint = Matter.Constraint;
 
-var stand1, stand2, ground;
-
-var block1, block2, block3, block4, 
-block5, block6, block7, block8, 
-block9, block10, block11, block12, 
-block13, block14, block15, block16;
-
-var block17, block18, block19, block20,
-block21, block22, block23, block24, block25;
-
-var polygonObject, polygonImage;
-
+var engine, world;
+var holder,polygon,ground;
+var stand1,stand2;
+var polygon;
 var slingShot;
-
-function preload() {
-	polygonImage = loadImage("polygon.png");
+var polygon_img;
+function preload(){
+  polygon_img=loadImage("polygon.png");
 }
-
 function setup() {
-	createCanvas(1200, 600);
-     
-    fill("ivory");
-    textSize(20);
-    textFont("Broadway");
-    text("Drag the hexagon to launch it towards blocks.", 300, 100);
+  createCanvas(900,400);
+  engine = Engine.create();
+  world = engine.world;
+  Engine.run(engine);
+  ground = new Ground(200,880,900,20,139,69,19);
+  stand1 = new Shelf(390,300,250,10);
+  stand2 = new Shelf(700,200,200,10);
+ 
+  //level one
+  block1 = new Block(300,275,30,40);
+  block2 = new Block(330,275,30,40);
+  block3 = new Block(360,275,30,40);
+  block4 = new Block(390,275,30,40);
+  block5 = new Block(420,275,30,40);
+  block6 = new Block(450,275,30,40);
+  block7 = new Block(480,275,30,40);
+  //level two
+  block8 = new Block(330,235,30,40);
+  block9 = new Block(360,235,30,40);
+  block10 = new Block(390,235,30,40);
+  block11 = new Block(420,235,30,40);
+  block12 = new Block(450,235,30,40);
+  //level three
+  block13 = new Block(360,195,30,40);
+  block14 = new Block(390,195,30,40);
+  block15 = new Block(420,195,30,40);
+  //top
+  block16 = new Block(390,155,30,40);
 
-	engine = Engine.create();
-	world = engine.world;
+  //set 2 for second stand
+  //level one
+  blocks1 = new Block(640,175,30,40);
+  blocks2 = new Block(670,175,30,40);
+  blocks3 = new Block(700,175,30,40);
+  blocks4 = new Block(730,175,30,40);
+  blocks5 = new Block(760,175,30,40);
+  //level two
+  blocks6 = new Block(670,135,30,40);
+  blocks7 = new Block(700,135,30,40);
+  blocks8 = new Block(730,135,30,40);
+  //top
+  blocks9 = new Block(700,95,30,40);
 
-	rectMode(CENTER);
-
-	Engine.run(engine);
-
-	//Create the Bodies Here.
-	stand1 = new Ground(490, 550, 315, 10, 210, 105, 30);
-	stand2 = new Ground(940, 350, 235, 10, 210, 105, 30);
-
-	ground = new Ground(width/2, 585, width, 10, 139, 69, 19);
-
-	block1 = new Block(395, 540, "DeepPink");
-	block2 = new Block(420, 540, "DeepPink");
-	block3 = new Block(450, 540, "DeepPink");
-	block4 = new Block(480, 540, "DeepPink");
-	block5 = new Block(510, 540, "DeepPink");
-	block6 = new Block(540, 540, "DeepPink");
-	block7 = new Block(570, 540, "DeepPink");
-	block8 = new Block(430, 475, "MediumAquamarine");
-	block9 = new Block(460, 475, "MediumAquamarine");
-	block10 = new Block(490, 475, "MediumAquamarine");
-	block11 = new Block(520, 475, "MediumAquamarine");
-	block12 = new Block(540, 475, "MediumAquamarine");
-	block13 = new Block(440, 415, "GreenYellow");
-	block14 = new Block(480, 415, "GreenYellow");
-	block15 = new Block(520, 415, "GreenYellow");
-	block16 = new Block(480, 355, "Coral");
-
-	block17 = new Block(870, 340, "DarkMagenta");
-	block18 = new Block(900, 340, "DarkMagenta");
-	block19 = new Block(930, 340, "DarkMagenta");
-	block20 = new Block(960, 340, "DarkMagenta");
-	block21 = new Block(990, 340, "DarkMagenta");
-	block22 = new Block(900, 275, "Crimson");
-	block23 = new Block(930, 275, "Crimson");
-	block24 = new Block(980, 275, "Crimson");
-	block25 = new Block(930, 215, "SteelBlue");
-
-	polygonObject = Bodies.circle(100, 400, 25);
-	World.add(world, polygonObject);
-
-	slingShot = new SlingShot(this.polygonObject, {x:105, y:300});
-}
-
-
-function draw() {
-  background("Bisque");
-  rectMode(CENTER);
-
-  fill("black");
-  stroke(4)
-  textSize(28);
-  textFont("ink free");
-  text("Drag the hexagon to launch it towards the blocks", 150, 100);
-  text("Press space to get one more chance", 150, 150);
+  //polygon holder with slings
+  polygon = Bodies.circle(50,200,20);
+  World.add(world,polygon);
   
-  //Stands display
+  slingShot = new Slingshot(this.polygon,{x:100,y:200});
+
+}
+function draw() {
+  background("Bisque"); 
+
+  text(mouseX + ',' + mouseY, 10, 15);
+  textSize(28);
+  fill("black");
+  stroke("black");
+  strokeWeight(2);
+  textFont("ink free")
+  text("Drag the polygon to destroy the blocks",200,30);
+  textSize(20);
+  text("Press Space to get a second Chance to Play!!",200 ,70);
+
+  ground.display();
   stand1.display();
   stand2.display();
-  ground.display();
-
-  //Blocks Set 1
+  strokeWeight(2);
+  stroke(15);
+  fill("DeepPink");
   block1.display();
   block2.display();
   block3.display();
@@ -100,50 +89,54 @@ function draw() {
   block5.display();
   block6.display();
   block7.display();
-
+  
+  fill("MediumAquaMarine");
   block8.display();
   block9.display();
   block10.display();
   block11.display();
   block12.display();
-
+  
+  fill("GreenYellow");
   block13.display();
   block14.display();
   block15.display();
-
+  
+  fill("Coral");
   block16.display();
+  
+  fill("DarkMagenta");
+  blocks1.display();
+  blocks2.display();
+  blocks3.display();
+  blocks4.display();
+  blocks5.display();
+  
+  fill("Crimson");
+  blocks6.display();
+  blocks7.display();
+  blocks8.display();
 
-  //Blocks Set 2
-  block17.display();
-  block18.display();
-  block19.display();
-  block20.display();
-  block21.display();
-
-  block22.display();
-  block23.display();
-  block24.display();
-
-  block25.display();
-
-  imageMode(CENTER);
-  image(polygonImage, polygonObject.position.x, polygonObject.position.y, 55, 55);
+  fill("SteelBlue")
+  blocks9.display();
+  fill("gold");
+  imageMode(CENTER)
+  image(polygon_img ,polygon.position.x,polygon.position.y,40,40);
 
   slingShot.display();
   
-  keyPressed();
-  drawSprites();
 }
 
-function mouseDragged() {
-  Matter.Body.setPosition(this.polygonObject, {x: mouseX, y: mouseY});
+function mouseDragged(){
+  Matter.Body.setPosition(this.polygon,{x:mouseX,y:mouseY});
 }
 
-function mouseReleased() {
+function mouseReleased(){
   slingShot.fly();
 }
+
 function keyPressed(){
   if(keyCode === 32){
-      slingShot.attach(this.polygonObject);
+      slingShot.attach(this.polygon);
   }
 }
